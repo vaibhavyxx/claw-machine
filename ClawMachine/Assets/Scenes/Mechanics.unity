@@ -671,6 +671,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Input
   _moveAction: {fileID: -1680190386980627800, guid: 052faaac586de48259a63d0c4782560b, type: 3}
+  _pressAction: {fileID: -2099379676528639254, guid: 052faaac586de48259a63d0c4782560b, type: 3}
 --- !u!54 &1639132333
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -680,7 +681,7 @@ Rigidbody:
   m_GameObject: {fileID: 1639132327}
   serializedVersion: 5
   m_Mass: 1
-  m_LinearDamping: 1
+  m_LinearDamping: 0
   m_AngularDamping: 0.05
   m_CenterOfMass: {x: 0, y: 0, z: 0}
   m_InertiaTensor: {x: 1, y: 1, z: 1}
@@ -694,9 +695,9 @@ Rigidbody:
   m_ImplicitCom: 1
   m_ImplicitTensor: 1
   m_UseGravity: 0
-  m_IsKinematic: 0
+  m_IsKinematic: 1
   m_Interpolate: 0
-  m_Constraints: 4
+  m_Constraints: 0
   m_CollisionDetection: 0
 --- !u!114 &1639132334
 MonoBehaviour:
@@ -710,9 +711,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 96ae8dd57b1acd24eaf096f78eba5295, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Move
-  speed: 0.1
-  rb: {fileID: 1639132333}
+  speed: 1
   inputSystem: {fileID: 1639132332}
+  goingDownPeriod: 2.5
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
