@@ -35,7 +35,6 @@ public class Input : MonoBehaviour
     void OnMovePerformed(InputAction.CallbackContext context)
     {
         _moveInput = context.ReadValue<Vector2>();
-        Debug.Log($"Move Input: {_moveInput}");
     }
 
     void OnMoveCanceled(InputAction.CallbackContext context)
@@ -46,12 +45,10 @@ public class Input : MonoBehaviour
     void OnPressPerformed(InputAction.CallbackContext context)
     {
         _pressed = true;
-        Debug.Log("Press action performed");
     }
     void OnPressCanceled(InputAction.CallbackContext context)
     {
         _pressed = false;
-        Debug.Log("Press action canceled");
     }
 }
 
