@@ -3,41 +3,47 @@ using System.Collections.Generic;
 public class Helix : MonoBehaviour
 {
     public LineRenderer _lineRenderer;
+    public GameObject sphere;
     public Vector3[] points;
-    public float radius = 50.0f;
-    public float widtth = 0.1f;
-    public int total = 50;
+    public float radius = 100.0f;
+    public float offset = 10.0f;
+    public float width = 0.1f;
+    public int total = 200;
     int count = 0;
-    float t = 0;
     float theta = 0;
+    float t = 0;
+    float d = 0;
     public float speed = 1.0f;
+    bool start = false;
 
     void Start()
     {
-        points = new Vector3 [total];
+        points = new Vector3[total];
         _lineRenderer.positionCount = total;
-        _lineRenderer.startWidth = widtth;
-        _lineRenderer.endWidth = widtth;
+        _lineRenderer.startWidth = width;
+        _lineRenderer.endWidth = width;
+        start = true;
     }
 
     void Update()
     {
-        theta += Time.deltaTime * speed;
-
-   
-        //for(int i = 0; i < total; i++) 
-        if( count < total)
+        if (start)
         {
-            //if( < total)
+            t += Time.deltaTime;
+            theta = t * speed;
+            float z = this.transform.position.z;
+            d += (speed * t);
+            for (int i = 0; i < total; i++)
             {
+                z += (offset * t);
                 Vector3 pt = new Vector3(
-                Mathf.Cos(theta) * radius,
-                count * radius,
-                 Mathf.Sin(theta) * radius);
-                points[count] = (pt);
+                this.transform.position.x + Mathf.Cos(theta * i),
+                this.transform.position.y + Mathf.Sin(theta * i), z);
+                points[i] = (pt);
+                //Instantiate(sphere, pt, Quaternion.identity);
             }
-            count++;
+            _lineRenderer.SetPositions(points);
+            start = false;
         }
-        _lineRenderer.SetPositions(points);
     }
 }
