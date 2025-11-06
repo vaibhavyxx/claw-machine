@@ -685,7 +685,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Helix
   _lineRenderer: {fileID: 861438878}
-  sphere: {fileID: 646918229}
   points: []
   radius: 0.01
   offset: 10
@@ -733,7 +732,7 @@ LineRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 40e75d9ba9ccd84428b3debb03092af8, type: 2}
+  - {fileID: 2100000, guid: 95f8817f671610d4282f3da8a29aff1c, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
