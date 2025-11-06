@@ -687,9 +687,9 @@ MonoBehaviour:
   _lineRenderer: {fileID: 861438878}
   points: []
   radius: 0.01
-  offset: 10
+  coilWidth: 10
   width: 1
-  total: 200
+  numOfCoils: 200
   speed: 10
 --- !u!4 &861438877
 Transform:
