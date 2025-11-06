@@ -8,8 +8,10 @@ public class Helix : MonoBehaviour
     public float radius = 100.0f;
     public float offset = 10.0f;
     public float width = 0.1f;
+    //Previous values
+    float prevWidth = 0.0f, prevRadius = 0.0f, prevOffset = 0.0f;
     public int total = 200;
-    int count = 0;
+    //int count = 0;
     float theta = 0;
     float t = 0;
     float d = 0;
@@ -27,6 +29,10 @@ public class Helix : MonoBehaviour
 
     void Update()
     {
+        if(prevWidth != width ||  prevRadius != radius || prevOffset!=offset)
+        {
+            start = true;
+        }
         if (start)
         {
             t += Time.deltaTime;
@@ -45,5 +51,9 @@ public class Helix : MonoBehaviour
             _lineRenderer.SetPositions(points);
             start = false;
         }
+
+        prevOffset = offset;
+        prevRadius = radius;
+        prevWidth = width;
     }
 }
