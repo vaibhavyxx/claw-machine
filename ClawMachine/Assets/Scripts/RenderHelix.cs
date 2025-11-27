@@ -72,7 +72,7 @@ public class RenderHelix : MonoBehaviour
 
             // --- Coil count calculation ---
             float finalAngle = theta * (totalPoints - 1);
-            coilsCount = (int)(finalAngle / (2f * Mathf.PI));
+            coilsCount = Mathf.RoundToInt(finalAngle / (2f * Mathf.PI));
             start = false;
         }
         else 

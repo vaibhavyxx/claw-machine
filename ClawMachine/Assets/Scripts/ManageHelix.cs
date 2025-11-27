@@ -8,7 +8,7 @@ public class ManageHelix : MonoBehaviour
     void Start()
     {
         length = Vector3.Distance(start.position, end.position);
-
+        helix.coilWidth = length/helix.coilsCount;
     }
 
     // Update is called once per frame
