@@ -1,6 +1,6 @@
 using UnityEngine;
 using System.Collections.Generic;
-public class DrawHelix : MonoBehaviour
+public class RenderHelix : MonoBehaviour
 {
     public LineRenderer _lineRenderer;
 
@@ -8,15 +8,16 @@ public class DrawHelix : MonoBehaviour
     //public float radius = 100.0f;
     public float coilWidth = 10.0f;
     public float lineWidth = 0.1f;
-    public int coils = 0;
+    public int coilsCount = 0;
 
     //Previous values
-    float prevWidth = 0.0f, prevRadius = 0.0f, prevOffset = 0.0f, prevTotal = 0, prevSpeed = 0;
+    float prevWidth = 0.0f, prevRadius = 0.0f, 
+        prevCoilWidth = 0.0f, 
+        prevTotal = 0, prevSpeed = 0;
     public int totalPoints = 200;
 
-    float theta = 0;
-    float t = 0;
-    float d = 0;
+    float theta = 0.0f;
+    float time = 0.0f;
 
     public float speed = 1.0f;
     bool start = false;
@@ -44,35 +45,43 @@ public class DrawHelix : MonoBehaviour
             start = true;
         }
         //Resets the coil values
-        if ( prevOffset != coilWidth || prevSpeed != speed)
+        if ( prevCoilWidth != coilWidth || prevSpeed != speed)  //Speed prevents jittering
             start = true;
 
         if (start)
         {
-            t += Time.deltaTime;
-            theta = speed * t;
+            time += Time.deltaTime;
+            theta = speed * time;
             float z = this.transform.position.z;
-            d += (speed * t);
+
             for (int i = 0; i < totalPoints; i++)
             {
-                z += (coilWidth * t);
-                Vector3 pt = new Vector3(
-                this.transform.position.x + Mathf.Cos(theta * i),
-                this.transform.position.y + Mathf.Sin(theta * i), z);
-                points[i] = (pt);
+                float deltaAngle = theta * i;
+                z += (coilWidth * time);
 
-                Debug.Log("theta: " + Mathf.Cos(theta * i));
+                Vector3 pt = new Vector3(
+                    transform.position.x + Mathf.Cos(deltaAngle),
+                    transform.position.y + Mathf.Sin(deltaAngle),
+                    z
+                );
+
+                points[i] = pt;
             }
+
             _lineRenderer.SetPositions(points);
+
+            // --- Coil count calculation ---
+            float finalAngle = theta * (totalPoints - 1);
+            coilsCount = (int)(finalAngle / (2f * Mathf.PI));
             start = false;
         }
-        if (!start)
-            t = 0.0f;
+        else 
+            time = 0.0f;
 
-        prevOffset = coilWidth;
-        //prevRadius = radius;
+        prevCoilWidth = coilWidth;
         prevWidth = lineWidth;
         prevTotal = totalPoints;
         prevSpeed = speed;
+       
     }
 }
