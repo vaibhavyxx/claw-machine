@@ -20,6 +20,7 @@ public class RenderHelix : MonoBehaviour
     float time = 0.0f;
 
     public float speed = 1.0f;
+    public Vector3 pos = Vector3.zero;
     bool start = false;
 
     void Start()
@@ -28,6 +29,7 @@ public class RenderHelix : MonoBehaviour
         _lineRenderer.positionCount = totalPoints;
         _lineRenderer.startWidth = lineWidth;
         _lineRenderer.endWidth = lineWidth;
+        pos = this.transform.position;
         start = true;
     }
 
@@ -52,7 +54,7 @@ public class RenderHelix : MonoBehaviour
         {
             time += Time.deltaTime;
             theta = speed * time;
-            float z = this.transform.position.z;
+            float z = pos.z;
 
             for (int i = 0; i < totalPoints; i++)
             {
@@ -60,8 +62,8 @@ public class RenderHelix : MonoBehaviour
                 z += (coilWidth * time);
 
                 Vector3 pt = new Vector3(
-                    transform.position.x + Mathf.Cos(deltaAngle),
-                    transform.position.y + Mathf.Sin(deltaAngle),
+                    pos.x + Mathf.Cos(deltaAngle),
+                    pos.y + Mathf.Sin(deltaAngle),
                     z
                 );
 
