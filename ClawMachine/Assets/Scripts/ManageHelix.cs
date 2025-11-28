@@ -19,12 +19,11 @@ public class ManageHelix : MonoBehaviour
 
     void Update()
     {
-
         if (helix.coilsCount > 0 && start.position != prevStart)
         {
             set = true;
-            helix.pos = start.position;
-            helix.coilWidth = length / helix.coilsCount;
+            //helix.pos = start.position;
+            //helix.coilWidth = length / helix.coilsCount;
         }
         prevStart = start.position;
     }

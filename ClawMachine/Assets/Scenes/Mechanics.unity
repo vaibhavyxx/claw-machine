@@ -554,7 +554,6 @@ GameObject:
   - component: {fileID: 861438877}
   - component: {fileID: 861438876}
   - component: {fileID: 861438878}
-  - component: {fileID: 861438879}
   m_Layer: 0
   m_Name: Cable
   m_TagString: Untagged
@@ -574,13 +573,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ddea2ccf892e6e9429f761699c7a287b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Helix
+  startTransform: {fileID: 1831795691}
+  endTransform: {fileID: 2108182057}
+  direction: {x: 0, y: 0, z: 0}
   _lineRenderer: {fileID: 861438878}
   points: []
-  coilWidth: 2
+  coilWidth: 0.5
   lineWidth: 0.1
   coilsCount: 0
   totalPoints: 200
-  speed: 10
+  length: 10
+  pos: {x: 0, y: 0, z: 0}
 --- !u!4 &861438877
 Transform:
   m_ObjectHideFlags: 0
@@ -706,21 +709,6 @@ LineRenderer:
   m_UseWorldSpace: 1
   m_Loop: 0
   m_ApplyActiveColorSpace: 1
---- !u!114 &861438879
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 861438875}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2d734acb1e45cd04ab6eedca8c5eb1ad, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::ManageHelix
-  helix: {fileID: 861438876}
-  start: {fileID: 1831795691}
-  end: {fileID: 2108182057}
 --- !u!1 &1592560812
 GameObject:
   m_ObjectHideFlags: 0
@@ -1124,7 +1112,7 @@ Transform:
   m_GameObject: {fileID: 2108182056}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -1.32767, y: -5.11, z: -3.40613}
+  m_LocalPosition: {x: -1.32767, y: -12.94, z: -3.40613}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
