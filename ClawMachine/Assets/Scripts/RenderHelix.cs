@@ -16,10 +16,12 @@ public class RenderHelix : MonoBehaviour
     public int coilsCount = 0;
     //public Direction direction = Direction.X;
     public int totalPoints = 200;
+    float sensitivity = 0.1f;
 
     //Previous values
     float prevWidth = 0.0f, //prevRadius = 0.0f,
-        prevCoilWidth = 0.0f, prevTotal = 0, prevLen = 0;
+        prevCoilWidth = 0.0f, prevTotal = 0, prevLen = 0; 
+        Vector3 prevDiff = Vector3.zero;
 
     float theta = 0.0f;
     float time = 0.0f;
@@ -41,6 +43,7 @@ public class RenderHelix : MonoBehaviour
     void Update()
     {
         Vector3 difference = endTransform.position - startTransform.position;
+        //coilWidth = 1.0f;
         direction = difference.normalized;
 
         //Updates line's size
@@ -55,21 +58,21 @@ public class RenderHelix : MonoBehaviour
             start = true;
         }
         //Resets the coil values
-        if (prevCoilWidth != coilWidth || prevLen != length)  //Speed prevents jittering
+        if (prevCoilWidth != coilWidth || prevLen != length ||
+            prevDiff != difference)  //Speed prevents jittering
             start = true;
 
         if (start)
         {
             time += Time.deltaTime;
-            theta = length * time;
-
+            theta = length * sensitivity;// * time;
             float z = this.transform.position.z;
             Quaternion rotation = Quaternion.LookRotation(direction);
             Debug.Log("dir:" + direction);
             for (int i = 0; i < totalPoints; i++)
             {
                 float deltaAngle = theta * i;
-                z += (coilWidth * time);
+                z += (coilWidth);// * time);
                 Vector3 pt = Vector3.zero;
 
                 pt = new Vector3(
@@ -93,5 +96,7 @@ public class RenderHelix : MonoBehaviour
         prevWidth = lineWidth;
         prevTotal = totalPoints;
         prevLen = length;
+        prevDiff = difference;
+        //coilWidth = newDiff / coilsCount;
     }
 }

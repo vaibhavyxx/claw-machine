@@ -581,7 +581,7 @@ MonoBehaviour:
   coilWidth: 0.5
   lineWidth: 0.1
   coilsCount: 0
-  totalPoints: 200
+  totalPoints: 50
   length: 10
   pos: {x: 0, y: 0, z: 0}
 --- !u!4 &861438877
