@@ -1,5 +1,8 @@
 using UnityEngine;
 using System.Collections.Generic;
+
+public enum Direction { X, Y, Z };
+
 public class RenderHelix : MonoBehaviour
 {
     public LineRenderer _lineRenderer;
@@ -9,10 +12,11 @@ public class RenderHelix : MonoBehaviour
     public float coilWidth = 10.0f;
     public float lineWidth = 0.1f;
     public int coilsCount = 0;
+    public Direction direction = Direction.X;
 
     //Previous values
-    float prevWidth = 0.0f, prevRadius = 0.0f, 
-        prevCoilWidth = 0.0f, 
+    float prevWidth = 0.0f, prevRadius = 0.0f,
+        prevCoilWidth = 0.0f,
         prevTotal = 0, prevSpeed = 0;
     public int totalPoints = 200;
 
@@ -40,14 +44,14 @@ public class RenderHelix : MonoBehaviour
             _lineRenderer.startWidth = _lineRenderer.endWidth = lineWidth;
 
         //Updates the total points in the linerenderer
-        if(prevTotal != totalPoints)
+        if (prevTotal != totalPoints)
         {
             points = new Vector3[totalPoints];
             _lineRenderer.positionCount = totalPoints;
             start = true;
         }
         //Resets the coil values
-        if ( prevCoilWidth != coilWidth || prevSpeed != speed)  //Speed prevents jittering
+        if (prevCoilWidth != coilWidth || prevSpeed != speed)  //Speed prevents jittering
             start = true;
 
         if (start)
@@ -60,12 +64,31 @@ public class RenderHelix : MonoBehaviour
             {
                 float deltaAngle = theta * i;
                 z += (coilWidth * time);
+                Vector3 pt = Vector3.zero;
+                switch (direction)
+                {
+                    case Direction.X:
+                        pt = new Vector3(
+                                z,
+                                pos.x + Mathf.Cos(deltaAngle),
+                                pos.y + Mathf.Sin(deltaAngle));
+                        break;
 
-                Vector3 pt = new Vector3(
-                    pos.x + Mathf.Cos(deltaAngle),
-                    pos.y + Mathf.Sin(deltaAngle),
-                    z
-                );
+                    case Direction.Y:
+                        pt = new Vector3(
+                                pos.x + Mathf.Cos(deltaAngle),
+                                z,
+                                pos.y + Mathf.Sin(deltaAngle));
+                        break;
+
+                    case Direction.Z:
+                        pt = new Vector3(
+                                pos.x + Mathf.Cos(deltaAngle),
+                                pos.y + Mathf.Sin(deltaAngle),
+                                z);
+                        break;
+                }
+
 
                 points[i] = pt;
             }
@@ -77,13 +100,13 @@ public class RenderHelix : MonoBehaviour
             coilsCount = Mathf.RoundToInt(finalAngle / (2f * Mathf.PI));
             start = false;
         }
-        else 
+        else
             time = 0.0f;
 
         prevCoilWidth = coilWidth;
         prevWidth = lineWidth;
         prevTotal = totalPoints;
         prevSpeed = speed;
-       
+
     }
 }
