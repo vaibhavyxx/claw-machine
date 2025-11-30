@@ -16,10 +16,10 @@ public class RenderHelix : MonoBehaviour
     public int coilsCount = 0;
     //public Direction direction = Direction.X;
     public int totalPoints = 200;
-    float sensitivity = 0.1f;
+    public float sensitivity = 0.1f;
 
     //Previous values
-    float prevWidth = 0.0f, //prevRadius = 0.0f,
+    float prevWidth = 0.0f, prevSensitivity = 0.0f,
         prevCoilWidth = 0.0f, prevTotal = 0, prevLen = 0; 
         Vector3 prevDiff = Vector3.zero;
 
@@ -59,7 +59,7 @@ public class RenderHelix : MonoBehaviour
         }
         //Resets the coil values
         if (prevCoilWidth != coilWidth || prevLen != length ||
-            prevDiff != difference)  //Speed prevents jittering
+            prevDiff != difference || prevSensitivity != sensitivity)  //Speed prevents jittering
             start = true;
 
         if (start)
@@ -71,8 +71,9 @@ public class RenderHelix : MonoBehaviour
             Debug.Log("dir:" + direction);
             for (int i = 0; i < totalPoints; i++)
             {
+                //coilWidth = difference.magnitude / coilsCount;
                 float deltaAngle = theta * i;
-                z += (coilWidth);// * time);
+                z += (coilWidth * sensitivity);// * time);
                 Vector3 pt = Vector3.zero;
 
                 pt = new Vector3(
@@ -97,6 +98,7 @@ public class RenderHelix : MonoBehaviour
         prevTotal = totalPoints;
         prevLen = length;
         prevDiff = difference;
-        //coilWidth = newDiff / coilsCount;
+        prevSensitivity = sensitivity;
+        coilWidth = difference.magnitude / coilsCount;
     }
 }
