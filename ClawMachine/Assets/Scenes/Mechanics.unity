@@ -583,7 +583,7 @@ MonoBehaviour:
   coilsCount: 0
   totalPoints: 150
   sensitivity: 10
-  length: 10
+  thetaDelta: 5
   pos: {x: 0, y: 0, z: 0}
 --- !u!4 &861438877
 Transform:
@@ -1082,7 +1082,7 @@ Transform:
   m_GameObject: {fileID: 1831795690}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -1.32767, y: 5.07, z: -3.40613}
+  m_LocalPosition: {x: 1, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1113,7 +1113,7 @@ Transform:
   m_GameObject: {fileID: 2108182056}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -18.24, y: -12.94, z: 9.53}
+  m_LocalPosition: {x: 5, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

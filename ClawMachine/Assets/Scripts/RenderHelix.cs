@@ -5,30 +5,35 @@ public enum Direction { X, Y, Z };
 
 public class RenderHelix : MonoBehaviour
 {
+    [Header("Control points")]
     [SerializeField] Transform startTransform;
     [SerializeField] Transform endTransform;
-    public Vector3 direction;
+
+    Vector3 direction;
+    Vector3[] points;
+
     public LineRenderer _lineRenderer;
 
-    public Vector3[] points;
-    public float coilWidth = 10.0f;
+    [Header("Line Renderer's properties")]
     public float lineWidth = 0.1f;
-    public int coilsCount = 0;
-    //public Direction direction = Direction.X;
+    public int coilsCount = 0;  //Manage helix uses it
     public int totalPoints = 200;
+
+    [Header("Coil's properites")]
     public float sensitivity = 0.1f;
+    public float thetaDelta = 1.0f;
+    float coilWidth = 10.0f;
 
     //Previous values
-    float prevWidth = 0.0f, prevSensitivity = 0.0f,
-        prevCoilWidth = 0.0f, prevTotal = 0, prevLen = 0; 
-        Vector3 prevDiff = Vector3.zero;
+    float prevWidth = 0.0f, prevSensitivity = 0.0f,prevCoilWidth = 0.0f, prevTotal = 0, prevDelta = 0;
+    Vector3 prevDiff = Vector3.zero;
 
     float theta = 0.0f;
-    float time = 0.0f;
+    float circumference = 0.0f;
 
-    public float length = 1.0f;
-    public Vector3 pos = Vector3.zero;
+    //Optimization purposes
     bool start = false;
+    bool findCircumference = false;
 
     void Start()
     {
@@ -36,14 +41,14 @@ public class RenderHelix : MonoBehaviour
         _lineRenderer.positionCount = totalPoints;
         _lineRenderer.startWidth = lineWidth;
         _lineRenderer.endWidth = lineWidth;
-        pos = this.transform.position;
+        //pos = this.transform.position;
         start = true;
     }
 
     void Update()
     {
         Vector3 difference = endTransform.position - startTransform.position;
-        //coilWidth = 1.0f;
+        float distance = difference.magnitude;
         direction = difference.normalized;
 
         //Updates line's size
@@ -58,22 +63,23 @@ public class RenderHelix : MonoBehaviour
             start = true;
         }
         //Resets the coil values
-        if (prevCoilWidth != coilWidth || prevLen != length ||
+        if (prevCoilWidth != coilWidth || prevDelta != thetaDelta ||
             prevDiff != difference || prevSensitivity != sensitivity)  //Speed prevents jittering
+        {
+            //circumference = 0.0f;
             start = true;
+        }
 
         if (start)
         {
-            time += Time.deltaTime;
-            theta = length * sensitivity;// * time;
+            theta = thetaDelta * sensitivity;
             float z = this.transform.position.z;
             Quaternion rotation = Quaternion.LookRotation(direction);
-            Debug.Log("dir:" + direction);
+
             for (int i = 0; i < totalPoints; i++)
             {
-                //coilWidth = difference.magnitude / coilsCount;
                 float deltaAngle = theta * i;
-                z += (coilWidth * sensitivity);// * time);
+                z += (coilWidth * sensitivity);
                 Vector3 pt = Vector3.zero;
 
                 pt = new Vector3(
@@ -82,7 +88,13 @@ public class RenderHelix : MonoBehaviour
                         z);
 
                 points[i] = rotation * pt + startTransform.position;
+                if (i > 0 && !findCircumference)
+                {
+                    float d = Vector3.Distance(points[i - 1], points[i]);
+                    circumference += d;
+                }
             }
+            if (circumference > 0) findCircumference = true;
             _lineRenderer.SetPositions(points);
 
             // --- Coil count calculation ---
@@ -90,15 +102,13 @@ public class RenderHelix : MonoBehaviour
             coilsCount = Mathf.RoundToInt(finalAngle / (2f * Mathf.PI));
             start = false;
         }
-        else
-            time = 0.0f;
 
         prevCoilWidth = coilWidth;
         prevWidth = lineWidth;
         prevTotal = totalPoints;
-        prevLen = length;
+        prevDelta = thetaDelta;
         prevDiff = difference;
         prevSensitivity = sensitivity;
-        coilWidth = difference.magnitude / coilsCount;
+        coilWidth = distance / coilsCount;
     }
 }
