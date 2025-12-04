@@ -1,5 +1,7 @@
 using UnityEngine;
 using System.Collections.Generic;
+using Unity.Mathematics;
+using JetBrains.Annotations;
 
 public enum Direction { X, Y, Z };
 
@@ -8,6 +10,7 @@ public class RenderHelix : MonoBehaviour
     [Header("Control points")]
     [SerializeField] Transform startTransform;
     [SerializeField] Transform endTransform;
+    [SerializeField] float coilAngle = Mathf.PI;
 
     Vector3 direction;
     Vector3[] points;
@@ -41,7 +44,6 @@ public class RenderHelix : MonoBehaviour
         _lineRenderer.positionCount = totalPoints;
         _lineRenderer.startWidth = lineWidth;
         _lineRenderer.endWidth = lineWidth;
-        //pos = this.transform.position;
         start = true;
     }
 
@@ -55,60 +57,91 @@ public class RenderHelix : MonoBehaviour
         if (prevWidth != lineWidth)
             _lineRenderer.startWidth = _lineRenderer.endWidth = lineWidth;
 
-        //Updates the total points in the linerenderer
+        UpdatePositionsArray();
+
+        if (HasAnyPreviousPropertiesChange(difference)) start = true;
+        
+
+        if (start)
+        {
+            if (circumference > 0) findCircumference = true;
+            _lineRenderer.SetPositions(UpdateHelixPoints(totalPoints));
+
+            coilsCount = CountTotalCoils();
+            start = false;
+        }
+
+        SaveLastFramesValues(coilWidth, lineWidth, totalPoints, thetaDelta, difference, sensitivity);
+        coilWidth = distance / coilsCount;
+    }
+
+    void SaveLastFramesValues(float coilWidth, float lineWidth, int total, float delta, Vector3 diff,
+        float sensitivity)
+    {
+        prevCoilWidth = coilWidth;
+        prevWidth = lineWidth;
+        prevTotal = total;
+        prevDelta = delta;
+        prevDiff = diff;
+        prevSensitivity = sensitivity;
+    }
+
+    bool HasAnyPreviousPropertiesChange(Vector3 diff)
+    {
+        return (prevCoilWidth != coilWidth || prevDelta != thetaDelta ||
+            prevDiff != diff || prevSensitivity != sensitivity);
+    }
+
+    int CountTotalCoils()
+    {
+        float finalAngle = theta * (totalPoints - 1);
+        return Mathf.RoundToInt(finalAngle / (2f * Mathf.PI));
+    }
+
+    Vector3[] UpdateHelixPoints(int totalPoints)
+    {
+        theta = thetaDelta * sensitivity;
+        float z = this.transform.position.z;
+        float coilAngleDiff = coilAngle / totalPoints;
+
+        for (int i = 0; i < totalPoints; i++)
+        {
+            float diff = i * coilAngleDiff;
+            Vector3 endPoint = endTransform.position;
+
+            Quaternion rotation = Quaternion.LookRotation(endPoint);
+            float deltaAngle = theta * i;
+            z += (coilWidth * sensitivity);
+            Vector3 pt = Vector3.zero;
+
+            pt = new Vector3(
+                    Mathf.Cos(deltaAngle),
+                    Mathf.Sin(deltaAngle),
+                    z);
+
+            points[i] = rotation * pt +
+                startTransform.position;
+            if (i > 0 && !findCircumference)
+            {
+                circumference += CalculateCircumference(points[i - 1], points[i]);
+            }
+        }
+        return points;
+    }
+
+    float CalculateCircumference(Vector3 a, Vector3 b)
+    {
+        return Vector3.Distance(a, b);
+    }
+
+    void UpdatePositionsArray()
+    {
         if (prevTotal != totalPoints)
         {
             points = new Vector3[totalPoints];
             _lineRenderer.positionCount = totalPoints;
             start = true;
         }
-        //Resets the coil values
-        if (prevCoilWidth != coilWidth || prevDelta != thetaDelta ||
-            prevDiff != difference || prevSensitivity != sensitivity)  //Speed prevents jittering
-        {
-            //circumference = 0.0f;
-            start = true;
-        }
-
-        if (start)
-        {
-            theta = thetaDelta * sensitivity;
-            float z = this.transform.position.z;
-            Quaternion rotation = Quaternion.LookRotation(direction);
-
-            for (int i = 0; i < totalPoints; i++)
-            {
-                float deltaAngle = theta * i;
-                z += (coilWidth * sensitivity);
-                Vector3 pt = Vector3.zero;
-
-                pt = new Vector3(
-                        Mathf.Cos(deltaAngle),
-                        Mathf.Sin(deltaAngle),
-                        z);
-
-                points[i] = rotation * pt + startTransform.position;
-                if (i > 0 && !findCircumference)
-                {
-                    float d = Vector3.Distance(points[i - 1], points[i]);
-                    circumference += d;
-                }
-            }
-            if (circumference > 0) findCircumference = true;
-            _lineRenderer.SetPositions(points);
-
-            // --- Coil count calculation ---
-            float finalAngle = theta * (totalPoints - 1);
-            coilsCount = Mathf.RoundToInt(finalAngle / (2f * Mathf.PI));
-            start = false;
-        }
-
-        prevCoilWidth = coilWidth;
-        prevWidth = lineWidth;
-        prevTotal = totalPoints;
-        prevDelta = thetaDelta;
-        prevDiff = difference;
-        prevSensitivity = sensitivity;
-        coilWidth = distance / coilsCount;
     }
+
 }
