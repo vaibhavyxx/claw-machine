@@ -67,15 +67,19 @@ public class RenderHelix : MonoBehaviour
         {
             if (circumference > 0) findCircumference = true;
             if(prevDistance != 0)
-                height = height * prevDistance/distance;      
+                height = height * prevDistance/distance;
+            if (height < 0.0f) coilWidth = coilWidth * prevDistance / distance;
             _lineRenderer.SetPositions(CoiledArc(totalPoints, Mathf.PI, distance, height));
 
             coilsCount = CountTotalCoils();
-            //start = false;
         }
 
         SaveLastFramesValues(coilWidth, lineWidth, totalPoints, thetaDelta, difference, sensitivity, height, distance);
-        coilWidth = distance / coilsCount;
+
+        if(height >= 0.0f)
+            coilWidth = circumference / coilsCount;
+
+        Debug.Log("coil width: "+ coilWidth);
     }
 
     void SaveLastFramesValues(float coilWidth, float lineWidth, int total, float delta, Vector3 diff,
