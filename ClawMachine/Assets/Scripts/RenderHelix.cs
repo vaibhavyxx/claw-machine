@@ -28,6 +28,7 @@ public class RenderHelix : MonoBehaviour
     public float sensitivity = 0.1f;
     public float thetaDelta = 1.0f;
     public float coilWidth = 10.0f;
+    public float stretchConstant = 0.5f;
 
     //Previous values
     float prevWidth, prevSensitivity,prevCoilWidth, prevTotal, prevDistance, prevDelta, prevHeight = 0.0f;
@@ -62,30 +63,23 @@ public class RenderHelix : MonoBehaviour
         if (prevWidth != lineWidth)
             _lineRenderer.startWidth = _lineRenderer.endWidth = lineWidth;
 
-        //Height will change as previous distance changes
-        if(prevDistance > 0)
-        {
-            if (distance - prevDistance >= 0.1f)
-            {
-                float k = distance / prevDistance;
-                height = k * height;
-            }
-        }
         UpdatePositionsArray();
         {
             if (circumference > 0) findCircumference = true;
+            if(prevDistance != 0)
+                height = height * prevDistance/distance;      
             _lineRenderer.SetPositions(CoiledArc(totalPoints, Mathf.PI, distance, height));
 
             coilsCount = CountTotalCoils();
             //start = false;
         }
 
-        SaveLastFramesValues(coilWidth, lineWidth, totalPoints, thetaDelta, difference, sensitivity, height);
+        SaveLastFramesValues(coilWidth, lineWidth, totalPoints, thetaDelta, difference, sensitivity, height, distance);
         coilWidth = distance / coilsCount;
     }
 
     void SaveLastFramesValues(float coilWidth, float lineWidth, int total, float delta, Vector3 diff,
-        float sensitivity, float prevHeight)
+        float sensitivity, float prevHeight, float distance)
     {
         prevCoilWidth = coilWidth;
         prevWidth = lineWidth;
@@ -93,6 +87,7 @@ public class RenderHelix : MonoBehaviour
         prevDelta = delta;
         prevDiff = diff;
         prevSensitivity = sensitivity;
+        prevDistance = distance;
         height = prevHeight;
     }
 
@@ -141,6 +136,7 @@ public class RenderHelix : MonoBehaviour
     Vector3[] CoiledArc(int totalPoints, float angle, float distance, float height)
     {
         theta = thetaDelta * sensitivity;
+        //height = stretchConstant * height;
         //float z = this.transform.position.z;
         float coilAngleDiff = coilAngle / totalPoints;
 
@@ -154,7 +150,7 @@ public class RenderHelix : MonoBehaviour
             Vector3 endPoint = endTransform.position;
 
             {
-                Quaternion rotation = Quaternion.LookRotation(endPoint);
+                Quaternion rotation = Quaternion.LookRotation(endTransform.position);
                 float deltaAngle = theta * i;
                 z += (coilWidth * sensitivity);
                 Vector3 pt = Vector3.zero;
