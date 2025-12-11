@@ -11,6 +11,7 @@ public class RenderHelix : MonoBehaviour
     [Header("Control points")]
     [SerializeField] Transform startTransform;
     [SerializeField] Transform endTransform;
+    [SerializeField] Transform midpointDir;
     [SerializeField] float coilAngle = Mathf.PI;
 
     Vector3 direction;
@@ -143,28 +144,28 @@ public class RenderHelix : MonoBehaviour
         //height = stretchConstant * height;
         //float z = this.transform.position.z;
         float coilAngleDiff = coilAngle / totalPoints;
-
+        Vector3 coilDirection = midpointDir.rotation.eulerAngles; 
         for (int i = 0; i < totalPoints; i++)
         {
             float t = i /(float)(totalPoints -1);
             float z = this.transform.position.z + t * distance; //testing
             float y = 4 * height * t * (1 - t);
+            Vector3 arcOffset = coilDirection.normalized * y;
 
             float diff = i * coilAngleDiff;
             Vector3 endPoint = endTransform.position;
-
+           
             {
                 Quaternion rotation = Quaternion.LookRotation(endTransform.position);
                 float deltaAngle = theta * i;
                 z += (coilWidth * sensitivity);
                 Vector3 pt = Vector3.zero;
 
-                pt = new Vector3(
-                        Mathf.Cos(deltaAngle),
+                Vector3 helix = new Vector3(Mathf.Cos(deltaAngle),
                         Mathf.Sin(deltaAngle) + y,
                         z);
-
-                points[i] = rotation * pt + startTransform.position;
+                pt = rotation * (helix + arcOffset);
+                points[i] = pt + startTransform.position;
 
             }
             if (i > 0 && !findCircumference)
